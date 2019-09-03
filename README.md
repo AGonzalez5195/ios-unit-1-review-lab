@@ -38,6 +38,32 @@ establishment of an absolute Tyranny over these States. To prove this, let Facts
 candid world.
 """
 ```
+```
+var wordDict = [String: Int]()
+
+var setOfCharacters = CharacterSet.punctuationCharacters
+
+setOfCharacters.insert(" ")
+setOfCharacters.insert("\n")
+
+var wordArray = declarationOfIndependence.components(separatedBy: setOfCharacters)
+
+for word in wordArray where word.count > 5 {
+    if let count = wordDict[word] {
+        wordDict[word] = count + 1
+    } else {
+        wordDict[word] = 1
+    }
+}
+
+//for word in allWords {
+//    wordCounts[word, default: 0] += 1
+//}
+
+var sortedByValueDictionary = wordDict.sorted { $0.1 < $1.1 }
+
+print(sortedByValueDictionary.popLast()?.0)
+```
 
 ## Question 2
 
@@ -47,7 +73,25 @@ Make an array that contains all elements that appear more than twice in someRepe
 ```swift
 var someRepeatsAgain = [25,11,30,31,50,28,4,37,13,20,24,38,28,14,44,33,7,43,39,35,36,42,1,40,7,14,23,46,21,39,11,42,12,38,41,48,20,23,29,24,50,41,38,23,11,30,50,13,13,16,10,8,3,43,10,20,28,39,24,36,21,13,40,25,37,39,31,4,46,20,38,2,7,11,11,41,45,9,49,31,38,23,41,16,49,29,14,6,6,11,5,39,13,17,43,1,1,15,25]
 ```
+```
+var intDict = [Int: Int]()
 
+for num in someRepeatsAgain {
+    if let count = intDict[num] {
+        intDict[num] = count + 1
+    } else {
+        intDict[num] = 1
+    }
+}
+
+var array: [Int] = []
+
+for (key, value) in intDict where value > 2 {
+    array.append(key)
+}
+
+print(array)
+```
 ## Question 3
 
 Identify if there are 3 integers in the following array that sum to 10. If so, print them. If there are multiple triplets, print all possible triplets.
@@ -55,9 +99,18 @@ Identify if there are 3 integers in the following array that sum to 10. If so, p
 ```swift
 var tripleSumArr = [-20,-14, -8,-5,-3,-2,1,2,3,4,9,15,20,30]
 ```
+```swift
+for a in tripleSumArr {
+for b in tripleSumArr {
+for c in tripleSumArr {
+if a + b + c == 10 {
+print(a, b, c)
+}
+}
+}
+}
 
-
-## Question 3
+## Question 4
 
 ```swift
 let letterValues = [
@@ -98,7 +151,7 @@ b. Sort the string below in ascending order according the dictionary letterValue
 var codeStringTwo = "znwemnrfewpiqn"
 
 
-## Question 4
+## Question 5
 
 Given an Array of Arrays of Ints, write a function that returns the Array of Ints with the largest sum:
 
@@ -108,8 +161,23 @@ Input: [[2,4,1],[3,0],[9,3]]
 
 Output: [9,3]
 ```
+```swift
+func largestSumArr(arrOfArr: [[Int]]) -> [Int] {
+var totalSum = Int()
+var currentArr = [Int]()
+for arr in arrOfArr {
+let sum = arr.reduce(0, +)
+if sum > totalSum {
+totalSum = sum
+currentArr = arr
+}
+}
+return currentArr
+}
+print(largestSumArr(arrOfArr: [[2,4,1],[3,0],[9,3],[15,6],[10,1]]))
+```
 
-## Question 5
+## Question 6
 
 ```swift
 struct Receipt {
@@ -129,15 +197,16 @@ b. Write a function that takes in an array of `Receipts` and returns an array of
 
 c. Write a function that takes in an array of `Receipts` and returns an array of those receipts sorted by price
 
-## Question 6
+## Question 7
 
 a. The code below doesn't compile.  Why?  Fix it so that it does compile.
+``It doesn't complie because homePlanet is a let constant``
 
 ```swift
 class Giant {
     var name: String
     var weight: Double
-    let homePlanet: String
+    var homePlanet: String
 
     init(name: String, weight: Double, homePlanet: String) {
         self.name = name
@@ -160,8 +229,9 @@ let edgar = Giant(name: "Edgar", weight: 520.0, homePlanet: "Earth")
 let jason = edgar
 jason.name = "Jason"
 ```
+``A class is a reference type where instances put to the same spot in memory. Declaring jason as being equal to edgar means they both point to the same spot in memory now. Thus, changing Jason will also change Edgar.``
 
-## Question 7
+## Question 8
 
 ```
 struct BankAccount {
@@ -179,6 +249,7 @@ struct BankAccount {
 ```
 
 a. Explain why the code above doesn't compile, then fix it.
+``Func needs to be mutating since it's adjusting a self property``
 
 b. Add a property called `deposits` of type `[Double]` that stores all of the deposits made to the bank account
 
@@ -188,7 +259,29 @@ d. Add a property called `startingBalance`.  Have this property be set to the or
 
 e. Add a method called `totalGrowth` that returns a double representing the change in the balance from the starting balance to the current balance
 
-## Question 8
+```swift
+struct BankAccount {
+var owner: String
+var balance: Double
+private let startingBalance: Double
+var deposits: [Double]
+var withdraws: [Double]
+mutating func deposit(_ amount: Double) {
+balance += amount
+deposits.append(amount)
+}
+
+mutating func withdraw(_ amount: Double) {
+balance -= amount
+withdraws.append(amount)
+}
+
+func totalGrowth() -> Double {
+return balance - startingBalance
+}
+}
+```
+## Question 9
 
 ```swift
 enum GameOfThronesHouse: String {
@@ -207,10 +300,41 @@ House Targaryen - Fire and Blood
 
 House Lannister - A Lannister always pays his debts
 ```
-
+```swift
+func houseMotto(house: GameOfThronesHouse) -> String {
+switch house {
+case .stark:
+return "Winter is coming"
+case .lannister:
+return "A Lannister always pays his debts"
+case .targaryen:
+return "Fire and Blood"
+case .baratheon:
+return "Ours is the Fury"
+}
+}
+```
 b. Move that function to inside the enum as a method
 
-## Question 9
+```swift
+enum GameOfThronesHouse: String {
+case stark, lannister, targaryen, baratheon
+
+func houseMotto() -> String {
+switch self {
+case .stark:
+return "Winter is coming"
+case .lannister:
+return "A Lannister always pays his debts"
+case .targaryen:
+return "Fire and Blood"
+case .baratheon:
+return "Ours is the Fury"
+}
+}
+}
+```
+## Question 10
 
 What are the contents of `library1` and `library2`? Explain why.
 
@@ -233,8 +357,8 @@ library1.add(track: "Voodoo Child")
 let library2 = library
 library2.add(track: "Come As You Are")
 ```
-
-## Question 10
+``Class is a reference type so the contents of library1 and library2 are both equal. "Michelle", "Voodoo Child", "Come As You Are"``
+## Question 11
 
 Make a function that takes in an array of strings and returns an array of strings. The function should determine if the string can be typed out using just one row on the keyboard. If the string can be typed out using just one row, that string should be in the returned array.  
 
